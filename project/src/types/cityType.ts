@@ -5,4 +5,5 @@ export type cityType = {
   priceValue: string;
   ratingStarsWidth: string;
   roomType: string;
+  id: string;
 }
