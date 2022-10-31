@@ -9,7 +9,8 @@ const cities = [
     name: 'Beautiful luxurious apartment at great location',
     priceValue: '120',
     ratingStarsWidth: '80%',
-    roomType: 'Apartment'
+    roomType: 'Apartment',
+    id: '0'
   },
   {
     isPremium: false,
@@ -17,7 +18,8 @@ const cities = [
     name: 'Wood and stone place',
     priceValue: '80',
     ratingStarsWidth: '80%',
-    roomType: 'Private room'
+    roomType: 'Private room',
+    id: '1'
   },
   {
     isPremium: false,
@@ -25,7 +27,8 @@ const cities = [
     name: 'Canal View Prinsengracht',
     priceValue: '132',
     ratingStarsWidth: '80%',
-    roomType: 'Apartment'
+    roomType: 'Apartment',
+    id: '2'
   },
   {
     isPremium: true,
@@ -33,7 +36,8 @@ const cities = [
     name: 'Nice, cozy, warm big bed apartment',
     priceValue: '180',
     ratingStarsWidth: '100%',
-    roomType: 'Apartment'
+    roomType: 'Apartment',
+    id: '3'
   },
   {
     isPremium: true,
@@ -41,7 +45,8 @@ const cities = [
     name: 'Wood and stone place',
     priceValue: '80',
     ratingStarsWidth: '80%',
-    roomType: 'Private room'
+    roomType: 'Private room',
+    id: '4'
   },
 ];
 

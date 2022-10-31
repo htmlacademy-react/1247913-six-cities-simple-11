@@ -1,21 +1,29 @@
+import { Link } from 'react-router-dom';
 import { cityType } from '../../types';
+import { AppRoute } from '../../const';
+
 
 type cardProps = {
   data: cityType;
-  classes: string;
+  location: string;
 }
 
-function Card({ data, classes }: cardProps): JSX.Element {
+function Card({ data, location }: cardProps): JSX.Element {
+  {/* eslint-disable-next-line no-console*/}
+  console.log('data: ', data);
+
   return (
-    <article className={`${classes}__card place-card`}>
+    <article className={`${location}__card place-card`}>
       {data.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
 
-      <div className={`${classes}__image-wrapper place-card__image-wrapper`}>
-        <a href="#">
+      <div className={`${location}__image-wrapper place-card__image-wrapper`}>
+        {/* <Link to={`${AppRoute.Property}/${data.id as 'string'}`}> */}
+        {/* <Link to={`property/${data.id as string}`}> */}
+        <Link to={`${AppRoute.Property}${data.id }`}>
           <img
             className="place-card__image"
             src={data.imageURL}
@@ -23,7 +31,7 @@ function Card({ data, classes }: cardProps): JSX.Element {
             height="200"
             alt={data.name}
           />
-        </a>
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
