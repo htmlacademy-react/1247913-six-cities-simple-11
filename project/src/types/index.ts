@@ -1,1 +1,1 @@
-export * from './cityType';
+export * from './dataTypes';
