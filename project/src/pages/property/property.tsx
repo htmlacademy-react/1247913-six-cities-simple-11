@@ -1,17 +1,30 @@
 import { useParams } from 'react-router-dom';
 import Card from '../../components/card/card';
 import Page404 from '../page404/page404';
-import { cityType } from '../../types';
+import { hotelsType, reviewType } from '../../types';
 
 type propertyProps = {
-  data: cityType[];
+  data: hotelsType[];
+  reviews: reviewType[];
 }
 
-function Property({ data }: propertyProps): JSX.Element {
+function Property({ data, reviews }: propertyProps): JSX.Element {
   const params = useParams();
+  const idFromParams = Number(params.id);
   const bottomCards = [1, 2, 3];
-  const foundedApartment = data.find((apartment) => apartment.id === params.id);
+  const foundedApartment = data.find((apartment) => apartment.id === idFromParams);
   const roomFromProps = foundedApartment ? foundedApartment : data[0];
+  const reviewsAmount = reviews.length;
+  function getDate(str: string) {
+
+    const date = new Date(str);
+    const result = date.toLocaleString('ru', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    return result;
+  }
   return foundedApartment ? (
     <main className="page__main page__main--property">
       <section className="property">
@@ -39,118 +52,85 @@ function Property({ data }: propertyProps): JSX.Element {
         </div>
         <div className="property__container container">
           <div className="property__wrapper">
-            <div className="property__mark">
-              <span>Premium</span>
-            </div>
+            {roomFromProps.isPremium &&
+              <div className="property__mark">
+                <span>Premium</span>
+              </div>}
             <div className="property__name-wrapper">
               <h1 className="property__name">
-                {roomFromProps.name}
+                {roomFromProps.title}
               </h1>
             </div>
             <div className="property__rating rating">
               <div className="property__stars rating__stars">
-                <span style={{ width: roomFromProps.ratingStarsWidth }}></span>
+                <span style={{ width: `${roomFromProps.rating / 5 * 100}%` }}></span>
                 <span className="visually-hidden">Rating</span>
               </div>
-              <span className="property__rating-value rating__value">4.8</span>
+              <span className="property__rating-value rating__value">{roomFromProps.rating}</span>
             </div>
             <ul className="property__features">
               <li className="property__feature property__feature--entire">
-                {roomFromProps.roomType}
+                {roomFromProps.type}
               </li>
               <li className="property__feature property__feature--bedrooms">
-                3 Bedrooms
+                {roomFromProps.bedrooms} Bedrooms
               </li>
               <li className="property__feature property__feature--adults">
-                Max 4 adults
+                Max {roomFromProps.maxAdults} adults
               </li>
             </ul>
             <div className="property__price">
-              <b className="property__price-value">&euro;{roomFromProps.priceValue}</b>
+              <b className="property__price-value">&euro;{roomFromProps.price}</b>
               <span className="property__price-text">&nbsp;night</span>
             </div>
             <div className="property__inside">
               <h2 className="property__inside-title">What&apos;s inside</h2>
               <ul className="property__inside-list">
-                <li className="property__inside-item">
-                  Wi-Fi
-                </li>
-                <li className="property__inside-item">
-                  Washing machine
-                </li>
-                <li className="property__inside-item">
-                  Towels
-                </li>
-                <li className="property__inside-item">
-                  Heating
-                </li>
-                <li className="property__inside-item">
-                  Coffee machine
-                </li>
-                <li className="property__inside-item">
-                  Baby seat
-                </li>
-                <li className="property__inside-item">
-                  Kitchen
-                </li>
-                <li className="property__inside-item">
-                  Dishwasher
-                </li>
-                <li className="property__inside-item">
-                  Cabel TV
-                </li>
-                <li className="property__inside-item">
-                  Fridge
-                </li>
+                {roomFromProps.goods.map((good) => <li className="property__inside-item" key={good}> {good} </li>)}
+
               </ul>
             </div>
             <div className="property__host">
               <h2 className="property__host-title">Meet the host</h2>
               <div className="property__host-user user">
                 <div className="property__avatar-wrapper property__avatar-wrapper--pro user__avatar-wrapper">
-                  <img className="property__avatar user__avatar" src="img/avatar-angelina.jpg" width="74" height="74" alt="Host avatar" />
+                  <img className="property__avatar user__avatar" src={roomFromProps.host.avatarUrl} width="74" height="74" alt="Host avatar" />
                 </div>
                 <span className="property__user-name">
-                  Angelina
+                  {roomFromProps.host.name}
                 </span>
-                <span className="property__user-status">
-                  Pro
-                </span>
+                {roomFromProps.host.isPro && <span className="property__user-status"> Pro </span>}
               </div>
               <div className="property__description">
-                <p className="property__text">
-                  A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.
-                </p>
-                <p className="property__text">
-                  An independent House, strategically located between Rembrand Square and National Opera, but where the bustle of the city comes to rest in this alley flowery and colorful.
-                </p>
+                {roomFromProps.description.map((descr) => <p className="property__text" key={descr}>{descr} </p>)}
               </div>
             </div>
             <section className="property__reviews reviews">
-              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">1</span></h2>
+              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsAmount}</span></h2>
               <ul className="reviews__list">
-                <li className="reviews__item">
-                  <div className="reviews__user user">
-                    <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                      <img className="reviews__avatar user__avatar" src="img/avatar-max.jpg" width="54" height="54" alt="Reviews avatar" />
-                    </div>
-                    <span className="reviews__user-name">
-                      Max
-                    </span>
-                  </div>
-                  <div className="reviews__info">
-                    <div className="reviews__rating rating">
-                      <div className="reviews__stars rating__stars">
-                        <span style={{ width: '80%' }}></span>
-                        <span className="visually-hidden">Rating</span>
+                {reviews.map((review) => (
+                  <li className="reviews__item" key={review.id}>
+                    <div className="reviews__user user">
+                      <div className="reviews__avatar-wrapper user__avatar-wrapper">
+                        <img className="reviews__avatar user__avatar" src="img/avatar-max.jpg" width="54" height="54" alt="Reviews avatar" />
                       </div>
+                      <span className="reviews__user-name">
+                        {review.user.name}
+                      </span>
                     </div>
-                    <p className="reviews__text">
-                      A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.
-                    </p>
-                    <time className="reviews__time" dateTime="2019-04-24">April 2019</time>
-                  </div>
-                </li>
+                    <div className="reviews__info">
+                      <div className="reviews__rating rating">
+                        <div className="reviews__stars rating__stars">
+                          <span style={{ width: `${review.rating / 5 * 100}%` }}></span>
+                          <span className="visually-hidden">Rating</span>
+                        </div>
+                      </div>
+                      {review.comment.map((line) => <p className="reviews__text" key={line}>{line}</p>)}
+
+                      <time className="reviews__time" dateTime={review.date}>{getDate(review.date)}</time>
+                    </div>
+                  </li>))}
+
               </ul>
               <form className="reviews__form form" action="#" method="post">
                 <label className="reviews__label form__label" htmlFor="review">Your review</label>
@@ -209,9 +189,10 @@ function Property({ data }: propertyProps): JSX.Element {
           <div className="near-places__list places__list">
             {bottomCards.map((city) => (
               <Card
-                key={data[city].id as 'string'}
+                key={data[city].id}
                 data={data[city]}
                 location='near-places'
+                onCardhover={()=>0}
               />
             ))}
 

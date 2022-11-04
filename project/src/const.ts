@@ -1,7 +1,7 @@
 export enum AppRoute {
   Root = '/',
   Login = 'login/',
-  Property = 'property/',
+  Room = 'offer/',
 }
 
 export enum AppAuthorizationStatus {
@@ -13,5 +13,4 @@ export enum AppAuthorizationStatus {
 export enum WrapperClasses {
   Login = 'page page--gray page--login',
   Main = 'page page--gray page--main',
-  Property = 'page',
 }
