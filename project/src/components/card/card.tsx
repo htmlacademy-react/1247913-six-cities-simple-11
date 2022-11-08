@@ -12,9 +12,8 @@ type cardProps = {
 function Card({ data, location, onCardhover }: cardProps): JSX.Element {
 
   const handleCardHover = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    {/* eslint-disable-next-line no-console*/}
-    console.log('data.id: ', data.id);
-    if(data.id) {
+
+    if (onCardhover) {
       onCardhover(data.id);
     }
   };
@@ -51,7 +50,9 @@ function Card({ data, location, onCardhover }: cardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{data.title}</a>
+          <Link to={`${AppRoute.Room}${data.id}`}>
+            {data.title}
+          </Link>
         </h2>
         <p className="place-card__type">{data.type}</p>
       </div>

@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom';
 import Card from '../../components/card/card';
+import ReviewForm from '../../components/review-form/review-form';
 import Page404 from '../page404/page404';
 import { hotelsType, reviewType } from '../../types';
+import { useState } from 'react';
 
 type propertyProps = {
   data: hotelsType[];
@@ -14,9 +16,30 @@ function Property({ data, reviews }: propertyProps): JSX.Element {
   const bottomCards = [1, 2, 3];
   const foundedApartment = data.find((apartment) => apartment.id === idFromParams);
   const roomFromProps = foundedApartment ? foundedApartment : data[0];
-  const reviewsAmount = reviews.length;
-  function getDate(str: string) {
 
+  const [fullReviewsData, setFullReviewsData] = useState(reviews);
+  const reviewsAmount = fullReviewsData.length;
+  const addNewReview = ({ rating , comment }: {rating: string; comment: string}) => {
+    const todayData = new Date().toJSON();
+    setFullReviewsData([
+      ...fullReviewsData,
+      {
+        id: reviewsAmount,
+        user: {
+          id: 4,
+          name: 'Max',
+          avatarUrl: 'img/avatar-max.jpg',
+        },
+        rating: +rating,
+        comment: [comment],
+        date: todayData,
+      }
+
+    ]
+    );
+  };
+
+  function getDate(str: string) {
     const date = new Date(str);
     const result = date.toLocaleString('ru', {
       day: 'numeric',
@@ -108,7 +131,7 @@ function Property({ data, reviews }: propertyProps): JSX.Element {
             <section className="property__reviews reviews">
               <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsAmount}</span></h2>
               <ul className="reviews__list">
-                {reviews.map((review) => (
+                {fullReviewsData.map((review) => (
                   <li className="reviews__item" key={review.id}>
                     <div className="reviews__user user">
                       <div className="reviews__avatar-wrapper user__avatar-wrapper">
@@ -132,52 +155,7 @@ function Property({ data, reviews }: propertyProps): JSX.Element {
                   </li>))}
 
               </ul>
-              <form className="reviews__form form" action="#" method="post">
-                <label className="reviews__label form__label" htmlFor="review">Your review</label>
-                <div className="reviews__rating-form form__rating">
-                  <input className="form__rating-input visually-hidden" name="rating" value="5" id="5-stars" type="radio" />
-                  <label htmlFor="5-stars" className="reviews__rating-label form__rating-label" title="perfect">
-                    <svg className="form__star-image" width="37" height="33">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                  </label>
-
-                  <input className="form__rating-input visually-hidden" name="rating" value="4" id="4-stars" type="radio" />
-                  <label htmlFor="4-stars" className="reviews__rating-label form__rating-label" title="good">
-                    <svg className="form__star-image" width="37" height="33">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                  </label>
-
-                  <input className="form__rating-input visually-hidden" name="rating" value="3" id="3-stars" type="radio" />
-                  <label htmlFor="3-stars" className="reviews__rating-label form__rating-label" title="not bad">
-                    <svg className="form__star-image" width="37" height="33">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                  </label>
-
-                  <input className="form__rating-input visually-hidden" name="rating" value="2" id="2-stars" type="radio" />
-                  <label htmlFor="2-stars" className="reviews__rating-label form__rating-label" title="badly">
-                    <svg className="form__star-image" width="37" height="33">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                  </label>
-
-                  <input className="form__rating-input visually-hidden" name="rating" value="1" id="1-star" type="radio" />
-                  <label htmlFor="1-star" className="reviews__rating-label form__rating-label" title="terribly">
-                    <svg className="form__star-image" width="37" height="33">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                  </label>
-                </div>
-                <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved"></textarea>
-                <div className="reviews__button-wrapper">
-                  <p className="reviews__help">
-                    To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
-                  </p>
-                  <button className="reviews__submit form__submit button" type="submit" disabled>Submit</button>
-                </div>
-              </form>
+              <ReviewForm onAddNewReview={addNewReview}/>
             </section>
           </div>
         </div>
@@ -192,7 +170,7 @@ function Property({ data, reviews }: propertyProps): JSX.Element {
                 key={data[city].id}
                 data={data[city]}
                 location='near-places'
-                onCardhover={()=>0}
+                onCardhover={() => 0}
               />
             ))}
 

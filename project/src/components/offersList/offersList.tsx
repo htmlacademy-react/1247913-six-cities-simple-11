@@ -1,4 +1,5 @@
 import Card from '../card/card';
+import Map from '../map/map';
 import { hotelsType } from '../../types';
 import { useState } from 'react';
 
@@ -57,7 +58,7 @@ function OffersList({ data }: OffersList): JSX.Element {
 
         </section>
         <div className="cities__right-section">
-          <section className="cities__map map"></section>
+          <Map className='cities__map' data={data}/>
         </div>
       </div>
     </div>
