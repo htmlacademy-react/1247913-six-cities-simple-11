@@ -58,7 +58,9 @@ function OffersList({ data }: OffersList): JSX.Element {
 
         </section>
         <div className="cities__right-section">
-          <Map className='cities__map' data={data}/>
+          <section className='cities__map map'>
+            <Map data={data} activeOffer={activeOffer} />
+          </section>
         </div>
       </div>
     </div>

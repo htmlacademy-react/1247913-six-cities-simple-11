@@ -45,25 +45,33 @@ export type hotelsType = {
   type: string;
   }
 
+export type CityData = {
+    location: {
+      latitude: number;
+      longitude: number;
+      zoom: number;
+    };
+    cityName: string;
+  };
 
-  export interface Host {
+export interface Host {
     id: number;
     isPro: boolean;
     name: string;
     avatarUrl: string;
   }
 
-  export interface PlaceLocation {
+export interface PlaceLocation {
     latitude: number;
     longitude: number;
     zoom: number;
   }
 
-  export interface City {
-    name: string,
-    location: PlaceLocation,
+export interface City {
+    name: string;
+    location: PlaceLocation;
   }
-  export interface Offer {
+export interface Offer {
     id: number;
     city: City;
     previewImage: string;
@@ -77,11 +85,11 @@ export type hotelsType = {
     maxAdults: number;
     price: number;
     goods: [string];
-    host: Host,
+    host: Host;
     description: string;
     location: PlaceLocation;
   }
 
-  export interface CityOffersGroup {
+export interface CityOffersGroup {
     [key: string]: Offer[];
   }
