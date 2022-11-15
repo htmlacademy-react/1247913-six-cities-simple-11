@@ -1,23 +1,21 @@
 import Card from '../card/card';
 import Map from '../map/map';
-import { hotelsType } from '../../types';
 import { useState } from 'react';
+import {useAppSelector} from '../../hooks';
 
-type OffersList = {
-  data: hotelsType[];
-}
-
-function OffersList({ data }: OffersList): JSX.Element {
+function OffersList(): JSX.Element {
   const [activeOffer, setActiveOffer] = useState(0);
-  const tempVal = activeOffer;
   const handleActiveCard = (id: number) => setActiveOffer(id);
+
+  const activeCity = useAppSelector((state) => state.activeCity);
+  const offersCity = useAppSelector((state) => state.activeCitiOffers);
 
   return (
     <div className="cities">
       <div className="cities__places-container container">
         <section className="cities__places places">
-          <h2 className="visually-hidden">Places {tempVal}</h2>
-          <b className="places__found">312 places to stay in Amsterdam</b>
+          <h2 className="visually-hidden">Places</h2>
+          <b className="places__found">312 places to stay in {activeCity}</b>
           <form className="places__sorting" action="#" method="get">
             <span className="places__sorting-caption">Sort by</span>
             <span className="places__sorting-type" tabIndex={0}>
@@ -45,7 +43,7 @@ function OffersList({ data }: OffersList): JSX.Element {
             </ul>
           </form>
           <div className="cities__places-list places__list tabs__content">
-            {data.map((offer) => (
+            {offersCity.map((offer) => (
               <Card
                 key={offer.id}
                 data={offer}
@@ -59,7 +57,7 @@ function OffersList({ data }: OffersList): JSX.Element {
         </section>
         <div className="cities__right-section">
           <section className='cities__map map'>
-            <Map data={data} activeOffer={activeOffer} />
+            <Map data={offersCity} activeOffer={activeOffer} />
           </section>
         </div>
       </div>
