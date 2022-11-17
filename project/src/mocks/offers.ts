@@ -1,4 +1,4 @@
-import { hotelsType } from '../types/dataTypes';
+import { hotelsType } from '../types';
 
 export const offers: hotelsType[] = [
   {
@@ -202,7 +202,7 @@ export const offers: hotelsType[] = [
         'longitude': 4.895168,
         'zoom': 10
       },
-      'name': 'Amsterdam'
+      'name': 'Paris'
     },
     'description': ['A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.'
     ],
@@ -242,6 +242,52 @@ export const offers: hotelsType[] = [
     'title': 'Beautiful & luxurious studio at great location',
     'type': 'apartment'
   },
-
-
+  {
+    'bedrooms': 3,
+    'city': {
+      'location': {
+        'latitude': 52.370216,
+        'longitude': 4.895168,
+        'zoom': 10
+      },
+      'name': 'Paris'
+    },
+    'description': ['A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.'
+    ],
+    'goods': [
+      'Heating',
+      'Wi-Fi',
+      'Washing machine',
+      'Towels',
+      'Coffee machine',
+      'Baby seat',
+      'Kitchen',
+      'Dishwasher',
+      'Cabel TV',
+      'Fridge',
+    ],
+    'host': {
+      'avatarUrl': 'img/avatar-angelina.jpg',
+      'id': 0,
+      'isPro': true,
+      'name': 'Angelina'
+    },
+    'id': 5,
+    'images': [
+      'img/apartment-01.jpg'
+    ],
+    'isFavorite': true,
+    'isPremium': true,
+    'location': {
+      'latitude': 52.35514938496378,
+      'longitude': 4.673877537499948,
+      'zoom': 8
+    },
+    'maxAdults': 4,
+    'previewImage': 'img/1.png',
+    'price': 120,
+    'rating': 4.8,
+    'title': 'Beautiful & luxurious studio at great location',
+    'type': 'apartment'
+  },
 ];

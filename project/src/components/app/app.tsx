@@ -26,7 +26,7 @@ function App({ data, reviews }: appProps): JSX.Element {
       <ScrollToTop />
       <Routes>
         <Route path={AppRoute.Root} element={<Layout isAuth={isAuth} classes={WrapperClasses.Main} />}>
-          <Route index element={<Main data={data} />} />
+          <Route index element={<Main />} />
           <Route path={`${AppRoute.Room}:id`} element={<Property data={data} reviews={reviews}/>} />
         </Route>
         <Route path={AppRoute.Login} element={<Layout isAuth={isAuth} classes={WrapperClasses.Login} />}>
