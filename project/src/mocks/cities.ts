@@ -1,55 +1,58 @@
+import {City} from '../types/city';
 
-const DEFAULT_ZOOM = 12;
-export const cities = [
+export const cities: City[] = [
   {
     location: {
-      latitude: 48.864716,
-      longitude: 2.349014,
-      zoom: DEFAULT_ZOOM,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
     },
-    cityName: 'Paris',
+    name: 'Amsterdam'
   },
   {
     location: {
-      latitude: 50.936389,
-      longitude: 6.952778,
-      zoom: DEFAULT_ZOOM,
+      latitude: 48.85341,
+      longitude: 2.3488,
+      zoom: 10,
     },
-    cityName: 'Cologne',
+    name: 'Paris'
   },
-  {
-    location: {
-      latitude: 50.8398,
-      longitude: 4.3526,
-      zoom: DEFAULT_ZOOM,
-    },
-    cityName: 'Brussels',
-  },
-  {
 
-    location: {
-      latitude: 52.38333,
-      longitude: 4.9,
-      zoom: DEFAULT_ZOOM,
-    },
-    cityName: 'Amsterdam',
-  },
   {
-
     location: {
-      latitude: 53.5436,
-      longitude: 10,
-      zoom: DEFAULT_ZOOM,
+      latitude: 51.22172,
+      longitude: 6.77616,
+      zoom: 10
     },
-    cityName: 'Hamburg',
+    name: 'Dusseldorf'
   },
+
   {
-
     location: {
-      latitude: 51.2243,
-      longitude: 6.7724,
-      zoom: DEFAULT_ZOOM,
+      latitude: 51.22172,
+      longitude: 6.77616,
+      zoom: 10
     },
-    cityName: 'Dusseldorf',
+    name: 'Hamburg'
   },
+
+  {
+    location: {
+      latitude: 51.22172,
+      longitude: 6.77616,
+      zoom: 10
+    },
+    name: 'Cologne'
+  },
+
+  {
+    location: {
+      latitude: 51.22172,
+      longitude: 6.77616,
+      zoom: 10
+    },
+    name: 'Brussels'
+  },
+
 ];
+

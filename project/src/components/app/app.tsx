@@ -1,45 +1,57 @@
-import ScrollToTop from '../scrollToTop/scrollToTop';
-import Layout from '../layout';
-import Main from '../../pages/main/main';
-import Property from '../../pages/property/property';
-import Page404 from '../../pages/page404/page404';
-import Login from '../../pages/login/login';
-import { hotelsType, reviewType } from '../../types';
-import { AppRoute, WrapperClasses } from '../../const';
+import {Route, BrowserRouter, Routes} from 'react-router-dom';
+import {HelmetProvider} from 'react-helmet-async';
+import {AppRoute, AuthorizationStatus} from '../../const';
+import PageLayout from '../../pages/page-layout/page-layout';
+import MainPage from '../../pages/main-page/main-page';
+import LoginPage from '../../pages/login-page/login-page';
+import RoomPage from '../../pages/room-page/room-page';
+import NotFoundPage from '../../pages/not-found-page/not-found-page';
+import {Review} from '../../types/review';
+import ScrollToTop from '../scroll-to-top/scroll-to-top';
+import {useAppSelector} from '../../hooks';
+import LoadingScreen from '../loading-screen/loading-screen';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
-
-type appProps = {
-  data: hotelsType[];
-  reviews: reviewType[];
+type AppScreenProps = {
+  reviews: Review[];
 }
 
-function App({ data, reviews }: appProps): JSX.Element {
-  const [isAuth, setIsAuth] = useState(false);
-  const authenticationHandle = () => {
-    setIsAuth((prevState) => !prevState);
-  };
+function App({reviews}: AppScreenProps): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+
+  if (authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading) {
+    return (
+      <LoadingScreen />);
+  }
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route path={AppRoute.Root} element={<Layout isAuth={isAuth} classes={WrapperClasses.Main} />}>
-          <Route index element={<Main />} />
-          <Route path={`${AppRoute.Room}:id`} element={<Property data={data} reviews={reviews}/>} />
-        </Route>
-        <Route path={AppRoute.Login} element={<Layout isAuth={isAuth} classes={WrapperClasses.Login} />}>
-          <Route index element={<Login isAuth={isAuth} authenticationHandle={authenticationHandle} />} />
-        </Route>
-        <Route path='*' element={<Layout isAuth={isAuth} classes={WrapperClasses.Main} />}>
-          <Route path='*' element={<Page404 />}>
+    <HelmetProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<PageLayout />}>
+            <Route
+              index
+              element={<MainPage />}
+            />
+            <Route
+              path="*"
+              element={<NotFoundPage />}
+            />
+            <Route path={AppRoute.Offers}>
+              <Route
+                path={AppRoute.Room}
+                element={<RoomPage reviews={reviews}/>}
+              />
+            </Route>
           </Route>
-        </Route>
-
-      </Routes>
-    </BrowserRouter>
-
+          <Route
+            path={AppRoute.Login}
+            element={<LoginPage />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
