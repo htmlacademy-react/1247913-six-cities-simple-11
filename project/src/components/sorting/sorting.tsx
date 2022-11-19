@@ -8,8 +8,8 @@ function Sorting(): JSX.Element {
   const optionsHandler = () => {
     setOptionsState(!openedOptions);
   };
-  const activeSort = useAppSelector((state) => state.sortType);
   const dispatch = useAppDispatch();
+  const activeSort = useAppSelector((state) => state.sortType);
   const sortingHandler = (sortType: SortTypes) => {
     optionsHandler();
     if (sortType === activeSort) {
