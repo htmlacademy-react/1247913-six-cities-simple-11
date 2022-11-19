@@ -1,51 +1,54 @@
-import { useEffect, useRef } from 'react';
-import useMap from '../../hooks/useMap';
-import { hotelsType } from '../../types';
-import { Icon, Marker } from 'leaflet';
+import {Icon, Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {RoomOffer} from '../../types/offer';
+import {City} from '../../types/city';
+import {useRef, useEffect} from 'react';
+import useMap from '../../hooks/useMap';
+import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
-type MapPropsType = {
-  data: hotelsType[];
-  activeOffer: number;
+type PageProps = {
+  offers: RoomOffer[];
+  activeCard: RoomOffer | undefined;
+  city: City;
 }
+
 const defaultCustomIcon = new Icon({
-  iconUrl: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg',
+  iconUrl: URL_MARKER_DEFAULT,
   iconSize: [40, 40],
   iconAnchor: [20, 40]
 });
 
 const currentCustomIcon = new Icon({
-  iconUrl: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg',
+  iconUrl: URL_MARKER_CURRENT,
   iconSize: [40, 40],
   iconAnchor: [20, 40]
 });
-function Map({ data, activeOffer }: MapPropsType) {
-  const amsterdamCity = data.find((offer) => offer.city.name === 'Amsterdam')!;
+
+function Map({offers, activeCard, city}: PageProps): JSX.Element {
   const mapRef = useRef(null);
-  const map = useMap(mapRef, amsterdamCity);
+  const map = useMap(mapRef, city);
 
   useEffect(() => {
     if (map) {
-      data.forEach((offer) => {
+      map.setView([city.location.latitude, city.location.longitude]);
+      offers.forEach((offer) => {
         const marker = new Marker({
           lat: offer.location.latitude,
-          lng: offer.location.longitude,
+          lng: offer.location.longitude
         });
+
         marker
           .setIcon(
-            activeOffer !== undefined && offer.id === activeOffer
+            activeCard !== undefined && offer.title === activeCard.title
               ? currentCustomIcon
               : defaultCustomIcon
           )
           .addTo(map);
       });
     }
-  }, [map, activeOffer, data]);
+  }, [map, offers, activeCard, city]);
 
-  return (
-    <div id="map" style={{ height: '100%', width: '100%' }} ref={mapRef}></div>
-
-  );
+  return <div style={{height: '100%'}} ref={mapRef}></div>;
 }
 
 export default Map;
