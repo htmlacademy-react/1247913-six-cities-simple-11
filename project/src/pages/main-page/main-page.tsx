@@ -1,4 +1,4 @@
-import {useAppSelector} from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import CitiesList from '../../components/cities-list/cities-list';
 import Offers from '../../components/offers/offers';
 
