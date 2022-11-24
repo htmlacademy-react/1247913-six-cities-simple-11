@@ -4,7 +4,8 @@ export enum AppRoute {
   Login = '/login',
   Root = '/',
   Room = ':id',
-  Offers = '/offer'
+  Offers = '/offer',
+  NotFound = '*'
 }
 
 export enum AuthorizationStatus {
@@ -16,10 +17,16 @@ export enum AuthorizationStatus {
 export enum APIRoute {
   Offers = '/hotels',
   Login = '/login',
-  Logout = '/logout'
+  Logout = '/logout',
+  Comments = '/comments'
 }
 
-export const TIMEOUT_SHOW_ERROR = 2000;
+export enum NameSpace {
+  Offers = 'OFFERS',
+  Comments = 'COMMENTS',
+  User = 'USER',
+  App = 'APP',
+}
 
 export const cities: readonly City[] = [
   {

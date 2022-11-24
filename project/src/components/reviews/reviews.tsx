@@ -1,12 +1,21 @@
 import ReviewForm from '../review-form/review-form';
-import {Review} from '../../types/review';
+import {useAppSelector} from '../../hooks';
 import {calculateStarRating} from '../../utils/utils';
+import {AuthorizationStatus} from '../../const';
+import {getCurrentComments} from '../../store/comments-data/selectors';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {formatDate} from '../../utils/utils';
 
-type PageProps = {
-  reviews: Review[];
+type propType = {
+  currentId: number;
 }
 
-function Reviews({reviews}: PageProps): JSX.Element {
+function Reviews({currentId}: propType): JSX.Element {
+
+  const reviews = useAppSelector(getCurrentComments);
+
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+
   const reviewsItems = reviews.map((review) => (
     <li className="reviews__item" key={review.id}>
       <div className="reviews__user user">
@@ -27,7 +36,7 @@ function Reviews({reviews}: PageProps): JSX.Element {
         <p className="reviews__text">
           {review.comment}
         </p>
-        <time className="reviews__time" dateTime={review.date}>{review.date}</time>
+        <time className="reviews__time" dateTime={review.date}>{formatDate(review.date)}</time>
       </div>
     </li>
   ));
@@ -38,7 +47,9 @@ function Reviews({reviews}: PageProps): JSX.Element {
       <ul className="reviews__list">
         {reviewsItems}
       </ul>
-      <ReviewForm />
+      {authorizationStatus === AuthorizationStatus.Auth ?
+        <ReviewForm currentId={currentId}/>
+        : ''}
     </section>
   );
 }
