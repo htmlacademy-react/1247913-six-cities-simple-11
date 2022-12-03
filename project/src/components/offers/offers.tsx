@@ -7,9 +7,8 @@ import Map from '../map/map';
 import {getOffersByCity} from '../../utils/utils';
 import NotFoundOffers from '../../components/not-found-offers/not-found-offers';
 import {sortOffers} from '../../utils/sorting';
-import {getSortTypes} from '../../store/app-process/selectors';
+import {getSortTypes, getCity} from '../../store/app-process/selectors';
 import {getOffers} from '../../store/offers-data/selectors';
-import { getCity } from '../../store/app-process/selectors';
 
 function Offers(): JSX.Element {
   const currentCity = useAppSelector(getCity);
