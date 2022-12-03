@@ -3,15 +3,15 @@ import {useAppDispatch, useAppSelector} from '../../hooks';
 import {AuthorizationStatus} from '../../const';
 import {Link} from 'react-router-dom';
 import {logoutAction} from '../../store/api-actions';
-import { setUserEmail } from '../../store/action';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {getUserEmail} from '../../store/app-process/selectors';
 
 function Header(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const userEmail = useAppSelector(getUserEmail);
   const dispatch = useAppDispatch();
-  const userEmail = useAppSelector((state) => state.userEmail);
   const logOutHandle = () => {
     dispatch(logoutAction());
-    dispatch(setUserEmail(null));
   };
 
   return (

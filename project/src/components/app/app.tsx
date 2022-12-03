@@ -1,32 +1,32 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import {Route, Routes} from 'react-router-dom';
+import {HelmetProvider} from 'react-helmet-async';
+import {AppRoute} from '../../const';
 import PageLayout from '../../pages/page-layout/page-layout';
 import MainPage from '../../pages/main-page/main-page';
 import LoginPage from '../../pages/login-page/login-page';
 import RoomPage from '../../pages/room-page/room-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
-import { Review } from '../../types/review';
 import ScrollToTop from '../scroll-to-top/scroll-to-top';
-import { useAppSelector } from '../../hooks';
+import {useAppSelector} from '../../hooks';
 import LoadingScreen from '../loading-screen/loading-screen';
+import HistoryRouter from '../history-route/history-route';
+import browserHistory from '../../browserHistory';
+import {getAuthCheckedStatus} from '../../store/user-process/selectors';
+import {getOffersDataLoadingStatus} from '../../store/offers-data/selectors';
 
-type AppScreenProps = {
-  reviews: Review[];
-}
+function App(): JSX.Element {
+  const isAuthChecked = useAppSelector(getAuthCheckedStatus);
+  const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
 
-function App({ reviews }: AppScreenProps): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
-
-  if (authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading) {
+  if (!isAuthChecked || isOffersDataLoading) {
     return (
       <LoadingScreen />);
   }
 
+
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HistoryRouter history={browserHistory}>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<PageLayout />}>
@@ -35,13 +35,17 @@ function App({ reviews }: AppScreenProps): JSX.Element {
               element={<MainPage />}
             />
             <Route
-              path="*"
+              path={AppRoute.NotFound}
               element={<NotFoundPage />}
             />
             <Route path={AppRoute.Offers}>
               <Route
                 path={AppRoute.Room}
-                element={<RoomPage reviews={reviews} />}
+                element={<RoomPage />}
+              />
+              <Route
+                path={AppRoute.NotFound}
+                element={<NotFoundPage />}
               />
             </Route>
           </Route>
@@ -50,7 +54,7 @@ function App({ reviews }: AppScreenProps): JSX.Element {
             element={<LoginPage />}
           />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </HelmetProvider>
   );
 }
