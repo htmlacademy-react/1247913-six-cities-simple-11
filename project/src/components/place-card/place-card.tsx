@@ -1,5 +1,4 @@
 import {Link} from 'react-router-dom';
-import React from 'react';
 import {RoomOffer} from '../../types/offer';
 import {calculateStarRating} from '../../utils/utils';
 
@@ -12,7 +11,7 @@ function PlaceCard({offer, cardClass}: PageProps): JSX.Element {
   const {title, price, type, previewImage, rating, isPremium, id} = offer;
 
   return (
-    <React.Fragment>
+    <>
       {isPremium ?
         <div className="place-card__mark">
           <span>Premium</span>
@@ -42,7 +41,7 @@ function PlaceCard({offer, cardClass}: PageProps): JSX.Element {
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
-    </React.Fragment>
+    </>
   );
 }
 
