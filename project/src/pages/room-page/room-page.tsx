@@ -1,12 +1,12 @@
+import {useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import {store} from '../../store/index';
 import PlaceCard from '../../components/place-card/place-card';
 import {useAppSelector} from '../../hooks';
 import Reviews from '../../components/reviews/reviews';
 import {calculateStarRating} from '../../utils/utils';
 import {fetchCommentsAction, fetchNearOffersAction, fetchOfferAction} from '../../store/api-actions';
-import {store} from '../../store/index';
 import Map from '../../components/map/map';
-import {useEffect} from 'react';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
 import {getCurrentNearOffers, getCurrentOffer} from '../../store/offers-data/selectors';
 

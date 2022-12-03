@@ -1,9 +1,9 @@
+import {useRef, useEffect} from 'react';
 import {Icon, Marker} from 'leaflet';
+import useMap from '../../hooks/useMap';
 import 'leaflet/dist/leaflet.css';
 import {RoomOffer} from '../../types/offer';
 import {City} from '../../types/city';
-import {useRef, useEffect} from 'react';
-import useMap from '../../hooks/useMap';
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
 type PageProps = {
