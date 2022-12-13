@@ -1,10 +1,10 @@
-import {useRef, useEffect} from 'react';
-import {Icon, Marker} from 'leaflet';
+import { useRef, useEffect } from 'react';
+import { Icon, Marker } from 'leaflet';
 import useMap from '../../hooks/useMap';
 import 'leaflet/dist/leaflet.css';
-import {RoomOffer, Offers} from '../../types/offer';
-import {City} from '../../types/city';
-import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
+import { RoomOffer, Offers } from '../../types/offer';
+import { City } from '../../types/city';
+import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
 
 type PageProps = {
   offers: Offers;
@@ -24,7 +24,7 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40]
 });
 
-function Map({offers, activeCard, city}: PageProps): JSX.Element {
+function Map({ offers, activeCard, city }: PageProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
@@ -39,7 +39,7 @@ function Map({offers, activeCard, city}: PageProps): JSX.Element {
 
         marker
           .setIcon(
-            activeCard !== undefined && offer.title === activeCard.title
+            activeCard !== undefined && (offer.location.latitude === activeCard.location.latitude && offer.location.longitude === activeCard.location.longitude)
               ? currentCustomIcon
               : defaultCustomIcon
           )
@@ -48,7 +48,7 @@ function Map({offers, activeCard, city}: PageProps): JSX.Element {
     }
   }, [map, offers, activeCard, city]);
 
-  return <div style={{height: '100%'}} ref={mapRef} data-testid="map"></div>;
+  return <div style={{ height: '100%' }} ref={mapRef} data-testid="map"></div>;
 }
 
 export default Map;

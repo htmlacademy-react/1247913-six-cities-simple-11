@@ -1,15 +1,17 @@
 import React from 'react';
-import {useState} from 'react';
-import {ratings} from '../../const';
-import {useAppDispatch} from '../../hooks';
-import {fetchSendCommentAction} from '../../store/api-actions';
+import { useState } from 'react';
+import { ratings } from '../../const';
+import { useAppDispatch } from '../../hooks';
+import { fetchSendCommentAction } from '../../store/api-actions';
 
 type propType = {
   currentId: number;
 }
+const MIN_COMMENT_LENGTH = 50;
+const MAX_COMMENT_LENGTH = 300;
 
-function ReviewForm({currentId}: propType): JSX.Element {
-  const [commentItem, setComment] = useState({text: '', rating: 0});
+function ReviewForm({ currentId }: propType): JSX.Element {
+  const [commentItem, setComment] = useState({ text: '', rating: 0 });
   const [commentIsSending, setStatusCommentSending] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -18,9 +20,9 @@ function ReviewForm({currentId}: propType): JSX.Element {
     const comment = commentItem.text;
     const rating = commentItem.rating;
     setStatusCommentSending(true);
-    await dispatch(fetchSendCommentAction({id, comment, rating}));
+    await dispatch(fetchSendCommentAction({ id, comment, rating }));
     setStatusCommentSending(false);
-    setComment({text: '', rating: 0});
+    setComment({ text: '', rating: 0 });
   };
 
   return (
@@ -67,7 +69,7 @@ function ReviewForm({currentId}: propType): JSX.Element {
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
         <button className="reviews__submit form__submit button" type="submit"
-          disabled={((commentItem.text.length < 50 || commentItem.text.length > 300) || commentItem.rating === 0 || commentIsSending)}
+          disabled={((commentItem.text.length < MIN_COMMENT_LENGTH || commentItem.text.length > MAX_COMMENT_LENGTH) || commentItem.rating === 0 || commentIsSending)}
         >Submit
         </button>
       </div>
