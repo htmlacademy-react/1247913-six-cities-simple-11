@@ -1,32 +1,27 @@
-import {SortTypes} from './../const';
-import {City} from './city';
-import {Comments} from './review';
-import {AuthorizationStatus} from '../const';
-import {store} from '../store/index';
-import {RoomOffer, Offers} from './offer';
+import { AuthorizationStatus } from '../consts';
+import { store } from '../store';
+import { NormalizedOffers, Offer } from './offer-type';
+import { Review } from './review-type';
 
-export type State = ReturnType<typeof store.getState>;
+export type AppData = {
+  offers: NormalizedOffers;
+  nearOffers: Offer[];
+  reviews: Review[];
+  isOffersLoading: boolean;
+  hasError: boolean;
+  isReviewPosted: boolean | undefined;
+}
 
 export type AppProcess = {
-  city: City;
-  sortType: SortTypes;
-  userEmail: string | null;
+  city: string;
+  sortType: string;
 }
 
 export type UserProcess = {
   authorizationStatus: AuthorizationStatus;
+  userEmail: string | null;
 }
 
-export type OffersData = {
-  isOffersDataLoading: boolean;
-  offers: Offers;
-  currentOffer: RoomOffer | null;
-  currentNearOffers: Offers;
-  hasError: boolean;
-}
-
-export type CommentsData = {
-  currentComments: Comments;
-}
+export type State = ReturnType<typeof store.getState >;
 
 export type AppDispatch = typeof store.dispatch;

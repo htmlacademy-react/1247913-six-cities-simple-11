@@ -1,18 +1,16 @@
-import { makeOffers } from './../utils/mocks';
-import { redirectToRoute } from './action';
 import {Action} from 'redux';
 import thunk, {ThunkDispatch} from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
+import { createAPI } from '../services/api';
 import {configureMockStore} from '@jedmao/redux-mock-store';
-import {createApi} from '../services/api';
-import { checkAuthAction, loginAction, fetchOffersAction, logoutAction } from './api-actions';
-import {APIRoute} from '../const';
-import {State} from '../types/state';
-import { setUserEmail } from './app-process/app-process';
+import { State } from '../types/state';
+import { ApiRoutes } from '../consts';
+import { checkAuthAction, fetchAllOffersAction, loginAction, logoutAction } from './api-actions';
+import { makeFakeOffer } from '../utils/mock';
 import { AuthData } from '../types/auth-data';
 
-describe('Async actions', () => {
-  const api = createApi();
+describe ('Async actions', () => {
+  const api = createAPI();
   const mockAPI = new MockAdapter(api);
   const middlewares = [thunk.withExtraArgument(api)];
 
@@ -22,10 +20,10 @@ describe('Async actions', () => {
     ThunkDispatch<State, typeof api, Action>
   >(middlewares);
 
-  it('should authorization status is "auth" when server return 200 and set user\'s email', async () => {
+  it('should authorization status is "auth" when server return 200', async () => {
     const store = mockStore();
     mockAPI
-      .onGet(APIRoute.Login)
+      .onGet(ApiRoutes.Login)
       .reply(200, []);
 
     expect(store.getActions()).toEqual([]);
@@ -36,16 +34,33 @@ describe('Async actions', () => {
 
     expect(actions).toEqual([
       checkAuthAction.pending.type,
-      setUserEmail.type,
       checkAuthAction.fulfilled.type,
     ]);
   });
 
-  it('should dispatch RequriedAuthorization and RedirectToRoute when POST /login, set user\'s email', async () => {
-    const fakerUser: AuthData = {email: 'log@mail.ru', password: '1234535'};
+  it('should dispatch load offers when GET /offers', async () => {
+    const mockOffers = makeFakeOffer();
+    const store = mockStore();
 
     mockAPI
-      .onPost(APIRoute.Login)
+      .onGet(ApiRoutes.Offers)
+      .reply(200, mockOffers);
+
+    await store.dispatch(fetchAllOffersAction());
+
+    const actions = store.getActions().map(({type}) => type);
+
+    expect(actions).toEqual([
+      fetchAllOffersAction.pending.type,
+      fetchAllOffersAction.fulfilled.type,
+    ]);
+  });
+
+  it('should dispatch Authorization when POST /login', async () => {
+    const fakerUser: AuthData = {login: 'vettrov78@mail.ru', password: '12345'};
+
+    mockAPI
+      .onPost(ApiRoutes.Login)
       .reply(200, {token: 'secret'});
 
     const store = mockStore();
@@ -55,41 +70,23 @@ describe('Async actions', () => {
 
     const actions = store.getActions().map(({type}) => type);
 
+    expect(Storage.prototype.setItem).toBeCalledTimes(1);
+    expect(Storage.prototype.setItem).toBeCalledWith('my-token', 'secret');
+
     expect(actions).toEqual([
       loginAction.pending.type,
-      setUserEmail.type,
-      redirectToRoute.type,
-      loginAction.fulfilled.type
+      loginAction.fulfilled.type,
     ]);
 
-    expect(Storage.prototype.setItem).toBeCalledTimes(1);
-    expect(Storage.prototype.setItem).toBeCalledWith('six-cities-simple', 'secret');
   });
 
-  it('should dispatch Load_Offers when GET /offers', async () => {
-    const mockOffers = makeOffers();
+  it('should dispatch Logout when delete /logout', async () => {
     mockAPI
-      .onGet(APIRoute.Offers)
-      .reply(200, mockOffers);
-
-    const store = mockStore();
-
-    await store.dispatch(fetchOffersAction());
-
-    const actions = store.getActions().map(({type}) => type);
-
-    expect(actions).toEqual([
-      fetchOffersAction.pending.type,
-      fetchOffersAction.fulfilled.type
-    ]);
-  });
-
-  it('should dispatch Logout when Delete /logout', async () => {
-    mockAPI
-      .onDelete(APIRoute.Logout)
+      .onDelete(ApiRoutes.Logout)
       .reply(204);
 
     const store = mockStore();
+
     Storage.prototype.removeItem = jest.fn();
 
     await store.dispatch(logoutAction());
@@ -98,8 +95,10 @@ describe('Async actions', () => {
 
     expect(actions).toEqual([
       logoutAction.pending.type,
-      setUserEmail.type,
-      logoutAction.fulfilled.type
+      logoutAction.fulfilled.type,
     ]);
+
+    expect(Storage.prototype.removeItem).toBeCalledTimes(1);
+    expect(Storage.prototype.removeItem).toBeCalledWith('my-token');
   });
 });
