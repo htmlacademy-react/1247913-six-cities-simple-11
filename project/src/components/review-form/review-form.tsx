@@ -57,7 +57,7 @@ function RewievForm (): JSX.Element {
         break;
       }
     }
-  }, [isReviewPosted]);
+  }, [isReviewPosted, dispatch]);
 
   return (
     <>
