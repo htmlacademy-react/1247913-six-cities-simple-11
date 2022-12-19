@@ -1,37 +1,44 @@
-import {useEffect, useState, useRef, MutableRefObject} from 'react';
-import {Map, TileLayer} from 'leaflet';
-import {City } from './../types/city';
+/* eslint-disable no-console */
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { Map, TileLayer } from 'leaflet';
+import { Location } from '../types/offer-type';
 
+function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: Location): Map | null {
 
-function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): Map | null {
-  const {location} = city;
   const [map, setMap] = useState<Map | null>(null);
-  const isRenderedRef = useRef<boolean>(false);
+  const isRefRendered = useRef<boolean>(false);
 
-  useEffect(() => {
-    if (mapRef.current !== null && !isRenderedRef.current) {
-      const instance = new Map(mapRef.current, {
-        center: {
-          lat: location.latitude,
-          lng: location.longitude,
-        },
-        zoom: location.zoom
-      });
+  useEffect(
+    () => {
+      if (isRefRendered.current && map)
+      {
+        map.setView([city.latitude, city.longitude], map.getZoom(), {
+          'animate': true,
+          'duration': 1,
+        });
+      }
 
-      const layer = new TileLayer(
-        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        {
-          attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        }
-      );
+      if (mapRef.current !== null && !isRefRendered.current)
+      {
+        const instance = new Map(mapRef.current, {
+          center: {
+            lat: city.latitude,
+            lng: city.longitude,
+          },
+          zoom: city.zoom
+        });
 
-      instance.addLayer(layer);
+        const layer = new TileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          });
+        instance.addLayer(layer);
+        setMap(instance);
 
-      setMap(instance);
-      isRenderedRef.current = true;
-    }
-  }, [mapRef, location, city]);
+        isRefRendered.current = true;
+      }
+    }, [mapRef, city, map]);
 
   return map;
 }

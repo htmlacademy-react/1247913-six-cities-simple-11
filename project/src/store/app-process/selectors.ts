@@ -1,8 +1,15 @@
-import {NameSpace} from '../../const';
-import {State} from '../../types/state';
-import {SortTypes} from '../../const';
-import {City} from '../../types/city';
+import { NameSpace, SortingType } from '../../consts';
+import { Offer } from '../../types/offer-type';
+import { State } from '../../types/state';
+import { getSortingFunc } from '../../utils';
 
-export const getCity = (state: State): City => state[NameSpace.App].city;
-export const getSortType = (state: State): SortTypes => state[NameSpace.App].sortType;
-export const getUserEmail = (state: State): string | null => state[NameSpace.App].userEmail;
+export const getCity = (state: State): string => state[NameSpace.Process].city;
+
+export const getSortType = (state: State): string => state[NameSpace.Process].sortType;
+
+export const getProcessedOffers = (state: State): Offer[] => state[NameSpace.Process].sortType === SortingType.Popular
+  ? Object.values(state[NameSpace.Data].offers)
+    .filter((offer) => offer.city.name === state[NameSpace.Process].city)
+  : Object.values(state[NameSpace.Data].offers)
+    .filter((offer) => offer.city.name === state[NameSpace.Process].city)
+    .sort(getSortingFunc(state[NameSpace.Process].sortType));

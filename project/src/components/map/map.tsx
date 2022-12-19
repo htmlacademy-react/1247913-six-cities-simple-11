@@ -1,54 +1,65 @@
-import { useRef, useEffect } from 'react';
-import { Icon, Marker } from 'leaflet';
+import { Icon, LayerGroup, Marker } from 'leaflet';
+import { useEffect, useRef } from 'react';
 import useMap from '../../hooks/useMap';
-import 'leaflet/dist/leaflet.css';
-import { RoomOffer, Offers } from '../../types/offer';
-import { City } from '../../types/city';
-import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
+import { Location, Offer } from '../../types/offer-type';
 
-type PageProps = {
-  offers: Offers;
-  activeCard?: RoomOffer | undefined;
-  city: City;
+type MapProps = {
+  offers: Offer[];
+  city: Location;
+  selectedPoint: Offer | undefined;
 }
 
 const defaultCustomIcon = new Icon({
-  iconUrl: URL_MARKER_DEFAULT,
+  iconUrl: 'img/pin.svg',
   iconSize: [40, 40],
   iconAnchor: [20, 40]
 });
 
 const currentCustomIcon = new Icon({
-  iconUrl: URL_MARKER_CURRENT,
+  iconUrl: 'img/pin-active.svg',
   iconSize: [40, 40],
   iconAnchor: [20, 40]
 });
 
-function Map({ offers, activeCard, city }: PageProps): JSX.Element {
+function Map (props: MapProps):JSX.Element {
+  const {offers, city, selectedPoint} = props;
+
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
     if (map) {
-      map.setView([city.location.latitude, city.location.longitude]);
+      map.eachLayer((layer) => {
+        if (layer instanceof Marker) {
+          layer.remove();
+        }
+      });
+
+      const markersLayer = new LayerGroup();
+
       offers.forEach((offer) => {
         const marker = new Marker({
           lat: offer.location.latitude,
-          lng: offer.location.longitude
+          lng: offer.location.longitude,
         });
-
         marker
           .setIcon(
-            activeCard !== undefined && (offer.location.latitude === activeCard.location.latitude && offer.location.longitude === activeCard.location.longitude)
-              ? currentCustomIcon
-              : defaultCustomIcon
+            selectedPoint !== undefined
+              && selectedPoint.location.latitude === offer.location.latitude
+              && selectedPoint.location.longitude === offer.location.longitude ?
+              currentCustomIcon :
+              defaultCustomIcon
           )
-          .addTo(map);
+          .addTo(markersLayer);
       });
-    }
-  }, [map, offers, activeCard, city]);
 
-  return <div style={{ height: '100%' }} ref={mapRef} data-testid="map"></div>;
+      map.addLayer(markersLayer);
+    }
+  }, [map, offers, selectedPoint]);
+
+  return (
+    <div style={{height: '100%'}} ref={mapRef}></div>
+  );
 }
 
 export default Map;

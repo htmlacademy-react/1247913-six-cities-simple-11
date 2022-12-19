@@ -1,26 +1,26 @@
-import {Route, Routes} from 'react-router-dom';
-import {HelmetProvider} from 'react-helmet-async';
-import {AppRoute} from '../../const';
-import PageLayout from '../../pages/page-layout/page-layout';
-import MainPage from '../../pages/main-page/main-page';
-import LoginPage from '../../pages/login-page/login-page';
-import RoomPage from '../../pages/room-page/room-page';
-import NotFoundPage from '../../pages/not-found-page/not-found-page';
-import ScrollToTop from '../scroll-to-top/scroll-to-top';
-import {useAppSelector} from '../../hooks';
-import LoadingScreen from '../loading-screen/loading-screen';
-import {getAuthCheckedStatus} from '../../store/user-process/selectors';
-import {getErrorStatus, getOffersDataLoadingStatus} from '../../store/offers-data/selectors';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus } from '../../consts';
+import { useAppSelector } from '../../hooks';
 import ErrorScreen from '../../pages/error-screen/error-screen';
+import LayoutScreen from '../../pages/layout-sreen/layout-screen';
+import LoadingScreen from '../../pages/loading-screen/loading-screen';
+import LoginScreen from '../../pages/login-screen/login-screen';
+import MainScreen from '../../pages/main-screen/main-screen';
+import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
+import PropertyScreen from '../../pages/property-screen/property-screen';
+import { getDataLoadingStatus, getErrorStatus } from '../../store/app-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+
 
 function App(): JSX.Element {
-  const isAuthChecked = useAppSelector(getAuthCheckedStatus);
-  const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isOffersDataLoading = useAppSelector(getDataLoadingStatus);
   const hasError = useAppSelector(getErrorStatus);
 
-  if (!isAuthChecked || isOffersDataLoading) {
+  if (isOffersDataLoading && authorizationStatus === AuthorizationStatus.Unknown) {
     return (
-      <LoadingScreen />);
+      <LoadingScreen />
+    );
   }
 
   if (hasError) {
@@ -29,37 +29,32 @@ function App(): JSX.Element {
     );
   }
 
-
   return (
-    <HelmetProvider>
-      <ScrollToTop />
+    <BrowserRouter>
       <Routes>
-        <Route path={AppRoute.Root} element={<PageLayout />}>
-          <Route
-            index
-            element={<MainPage />}
-          />
-          <Route
-            path={AppRoute.NotFound}
-            element={<NotFoundPage />}
-          />
-          <Route path={AppRoute.Offers}>
-            <Route
-              path={AppRoute.Room}
-              element={<RoomPage />}
-            />
-            <Route
-              path={AppRoute.NotFound}
-              element={<NotFoundPage />}
-            />
-          </Route>
-        </Route>
         <Route
           path={AppRoute.Login}
-          element={<LoginPage />}
+          element={<LoginScreen />}
         />
+        <Route
+          path={AppRoute.Root}
+          element={<LayoutScreen />}
+        >
+          <Route
+            index
+            element={<MainScreen />}
+          />
+          <Route
+            path={AppRoute.Offer}
+            element={<PropertyScreen />}
+          />
+          <Route
+            path='*'
+            element={<NotFoundScreen />}
+          />
+        </Route>
       </Routes>
-    </HelmetProvider>
+    </BrowserRouter>
   );
 }
 
